@@ -23,8 +23,8 @@ enum layers{
     USER3,
     USER4,
     USER5,
-    USER6,
     BASE,
+    EXTRA,
     TAP,
     BTN,
     NAV,
@@ -36,6 +36,7 @@ enum layers{
 };
 enum {
     TD_BASE = BASE,
+    TD_EXTRA,
     TD_TAP,
     TD_BTN,
     TD_NAV,
@@ -79,6 +80,7 @@ void u_td_fn_boot(tap_dance_state_t *state, void *user_data) {
 tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Escape, twice for Caps Lock
     [TD_BASE] =  ACTION_TAP_DANCE_SET_LAYER(BASE),
+    [TD_EXTRA] =  ACTION_TAP_DANCE_SET_LAYER(EXTRA),
     [TD_NUM] =   ACTION_TAP_DANCE_SET_LAYER(NUM),
     [TD_SYM] =   ACTION_TAP_DANCE_SET_LAYER(SYM),
     [TD_TAP] =   ACTION_TAP_DANCE_SET_LAYER(TAP),
@@ -136,34 +138,34 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         MC_4,    KC_LSFT,            KC_Z,     KC_X,     KC_C,     KC_V,      KC_B,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,  KC_UP,
         MC_5,    KC_LCTL,  KC_LWIN,            KC_LALT,  KC_SPC,  MO(USER2),                    KC_SPC,             KC_RALT,                      KC_LEFT,  KC_DOWN,  KC_RGHT),
 
-    [USER6] = LAYOUT_ansi_89(
-        KC_MUTE,    KC_ESC,   KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,     KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_INS,             KC_DEL,
-        KC_6,    KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,      KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,            KC_PGUP,
-        MC_2,    KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,      KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,  KC_BSLS,            KC_PGDN,
-        MC_3,    KC_CAPS,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,      KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,            KC_ENT,             KC_HOME,
-        MC_4,    KC_LSFT,            KC_Z,     KC_X,     KC_C,     KC_V,      KC_B,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,  KC_UP,
-        MC_5,    KC_LCTL,  KC_LWIN,            KC_LALT,  KC_SPC,  MO(USER2),                    KC_SPC,             KC_RALT,                      KC_LEFT,  KC_DOWN,  KC_RGHT),
-
     [BASE] = LAYOUT_ansi_89(
         KC_MUTE, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA,
         U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA,
         U_NA, U_NA,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,      KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,  U_NA, U_NA, U_NA, U_NA,
-        U_NA, U_NA,  LGUI_T(KC_A), LCTL_T(KC_S), LALT_T(KC_D), LSFT_T(KC_F), KC_G, KC_H, RSFT_T(KC_J), ALGR_T(KC_K), RCTL_T(KC_L), RGUI_T(KC_SCLN), U_NA, U_NA, U_NA,
-        U_NA, U_NA,  KC_Z, ALGR_T(KC_X),  KC_C,    KC_V,   KC_B,      LT(FUN,KC_BSPC), KC_N, KC_M, KC_COMM, LALT_T(KC_DOT), KC_SLSH, U_NA,  U_NA,
+        U_NA, U_NA,  LGUI_T(KC_A), LCTL_T(KC_S), LALT_T(KC_D), LSFT_T(KC_F), KC_G, KC_H, RSFT_T(KC_J),  LALT_T(KC_K), RCTL_T(KC_L), RGUI_T(KC_SCLN), U_NA, U_NA, U_NA,
+        U_NA, U_NA,  KC_Z, ALGR_T(KC_X),  KC_C,    KC_V,   KC_B,      LT(FUN,KC_BSPC), KC_N, KC_M, KC_COMM, ALGR_T(KC_DOT), KC_SLSH, U_NA,  U_NA,
+        U_NA, U_NA, U_NA,  LT(MEDIA,KC_ESC), LT(NAV,KC_ENT), LT(MOUSE,KC_TAB),LT(NUM,KC_SPC),LT(SYM,KC_DEL), U_NA, U_NA, U_NA),
+
+    [EXTRA] = LAYOUT_ansi_89(
+        KC_MUTE, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA,
+        U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA,
+        U_NA, U_NA,   KC_Q,     KC_W,     KC_F,     KC_P,     KC_B,      KC_J,     KC_L,     KC_U,     KC_Y,     KC_SCLN,  U_NA, U_NA, U_NA, U_NA,
+        U_NA, U_NA,  LGUI_T(KC_A), LCTL_T(KC_R), LALT_T(KC_S), LSFT_T(KC_T), KC_G, KC_M, RSFT_T(KC_N), LALT_T(KC_E), RCTL_T(KC_I), RGUI_T(KC_O), U_NA, U_NA, U_NA,
+        U_NA, U_NA,  KC_Z, ALGR_T(KC_X),  KC_C,    KC_D,   KC_V,      LT(FUN,KC_BSPC), KC_K, KC_H, KC_COMM, ALGR_T(KC_DOT), KC_SLSH, U_NA,  U_NA,
         U_NA, U_NA, U_NA,  LT(MEDIA,KC_ESC), LT(NAV,KC_ENT), LT(MOUSE,KC_TAB),LT(NUM,KC_SPC),LT(SYM,KC_DEL), U_NA, U_NA, U_NA),
 
     [TAP] =  LAYOUT_ansi_89(
+        KC_MUTE, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA,
         U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA,
-        U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA, U_NA,
-        U_NA, U_NA, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, U_NA, U_NA, U_NA, U_NA,
-        U_NA, U_NA, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, U_NA, U_NA, U_NA,
-        U_NA, U_NA, KC_Z, KC_X, KC_C, KC_V, KC_B,                             LT(FUN,KC_BSPC), KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, U_NA,  U_NA,
-        U_NA, U_NA, U_NA,  LT(MEDIA,KC_ESC), LT(NAV,KC_ENT), LT(MOUSE,KC_TAB),LT(NUM,KC_SPC),LT(SYM,KC_DEL), U_NA, U_NA, U_NA),
+        U_NA, U_NA,   KC_Q,     KC_W,     KC_F,     KC_P,     KC_B,      KC_J,     KC_L,     KC_U,     KC_Y,     KC_SCLN,  U_NA, U_NA, U_NA, U_NA,
+        U_NA, U_NA, KC_A, KC_R, KC_S, KC_T, KC_G, KC_M, KC_N, KC_E, KC_I, KC_O, U_NA, U_NA, U_NA,
+        U_NA, U_NA,  KC_Z, KC_X,  KC_C,    KC_D,   KC_V,      KC_BSPC, KC_K, KC_H, KC_COMM, KC_DOT, KC_SLSH, U_NA,  U_NA,
+        U_NA, U_NA, U_NA,  LT(MEDIA,KC_ESC), KC_ENT, KC_TAB,KC_SPC,LT(SYM,KC_DEL), U_NA, U_NA, U_NA),
 
     [NUM] = LAYOUT_ansi_89(
         KC_MUTE, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, KC_LBRC, KC_7,   KC_8, KC_9, KC_RBRC, U_NA, TD(TD_BASE), U_NA, TD(TD_TAP), TD(TD_BOOT), _______, _______, _______, _______,
+        _______, _______, KC_LBRC, KC_7,   KC_8, KC_9, KC_RBRC, U_NA, TD(TD_BASE), TD(TD_EXTRA), TD(TD_TAP), TD(TD_BOOT), _______, _______, _______, _______,
         _______, _______, KC_QUOT, KC_4,   KC_5, KC_6, KC_EQL,  U_NA, KC_RSFT, KC_ALGR, KC_RCTL, KC_RGUI,  _______, _______, _______,
         _______, _______, KC_GRV,  KC_1,   KC_2, KC_3, KC_BSLS, U_NA,  U_NA, TD(TD_NUM), TD(TD_NAV), KC_ALGR, U_NA, _______,  _______,
         _______, _______, _______, KC_DOT, KC_0, KC_MINS,          U_NA,  U_NA,  _______, _______, _______),
@@ -171,7 +173,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYM] =  LAYOUT_ansi_89(
         KC_MUTE, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        _______, _______,KC_LCBR, KC_AMPR, KC_ASTR, KC_LPRN, KC_RCBR, U_NA, TD(TD_BASE), U_NA, TD(TD_TAP), TD(TD_BOOT),  _______, _______, _______, _______,
+        _______, _______,KC_LCBR, KC_AMPR, KC_ASTR, KC_LPRN, KC_RCBR, U_NA, TD(TD_BASE), TD(TD_EXTRA), TD(TD_TAP), TD(TD_BOOT),  _______, _______, _______, _______,
         _______, _______,KC_DQUO, KC_DLR,  KC_PERC, KC_CIRC, KC_PLUS, U_NA, KC_RSFT, KC_ALGR, KC_RCTL, KC_RGUI,  _______, _______, _______,
         _______, _______,KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_PIPE, U_NA,  U_NA, TD(TD_SYM), TD(TD_MOUSE), KC_ALGR, U_NA, _______,  _______,
         _______, _______, _______, KC_LPRN,KC_RPRN, KC_UNDS,          U_NA,  U_NA,  _______, _______, _______),
@@ -179,7 +181,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [NAV] =  LAYOUT_ansi_89(
         KC_MUTE, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, TD(TD_BOOT), TD(TD_TAP), U_NA, TD(TD_BASE),  U_NA, U_CPY, U_UND, U_RDO, U_CUT, U_PST, _______, _______, _______, _______,
+        _______, _______, TD(TD_BOOT), TD(TD_TAP), TD(TD_EXTRA), TD(TD_BASE),  U_NA, U_CPY, U_UND, U_RDO, U_CUT, U_PST, _______, _______, _______, _______,
         _______, _______, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT,      U_NA, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,  CW_TOGG,_______, _______, _______,
         _______, _______, U_NA,    KC_ALGR,  TD(TD_NUM), TD(TD_NAV),     U_NA, KC_BSPC, KC_HOME, KC_PGDN, KC_PGUP,  KC_END, KC_INS, _______,  _______,
         _______, _______, _______, KC_DEL, KC_ENT, KC_BSPC,                U_NA,  U_NA,  _______, _______, _______),
@@ -195,7 +197,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MOUSE] = LAYOUT_ansi_89(
         KC_MUTE, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, TD(TD_BOOT), TD(TD_TAP), U_NA, TD(TD_BASE),  U_NA, U_CPY, U_UND, U_RDO, U_CUT, U_PST, _______, _______, _______, _______,
+        _______, _______, TD(TD_BOOT), TD(TD_TAP), TD(TD_EXTRA), TD(TD_BASE),  U_NA, U_CPY, U_UND, U_RDO, U_CUT, U_PST, _______, _______, _______, _______,
         _______, _______, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT,      U_NA, KC_MS_L, KC_MS_D, KC_MS_U, KC_MS_R, _______,_______, _______, _______,
         _______, _______, U_NA,    KC_ALGR,  TD(TD_FUN), TD(TD_MEDIA),     U_NA, KC_BTN3, KC_WH_L, KC_WH_D, KC_WH_U, KC_WH_R, _______, _______,  _______,
         _______, _______, _______, U_NA, U_NA, U_NA,                     KC_BTN1,  KC_BTN2,  _______, _______, _______),
@@ -203,7 +205,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MEDIA] =  LAYOUT_ansi_89(
         KC_MUTE, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, TD(TD_BOOT), TD(TD_TAP), U_NA, TD(TD_BASE),  U_NA, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, RGB_TOG, _______, _______, _______, _______,
+        _______, _______, TD(TD_BOOT), TD(TD_TAP), TD(TD_EXTRA), TD(TD_BASE),  U_NA, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, RGB_TOG, _______, _______, _______, _______,
         _______, _______, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT,      U_NA, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, _______,_______, _______, _______,
         _______, _______, U_NA,    KC_ALGR,  TD(TD_SYM), TD(TD_MOUSE),     U_NA, KC_MSTP,  NK_TOGG, U_NU, U_NU, U_NU, OU_AUTO, _______,  _______,
         _______, _______, _______, U_NA, U_NA, U_NA,                     KC_MPLY,  KC_MUTE,  _______, _______, _______),
@@ -211,7 +213,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [FUN] =  LAYOUT_ansi_89(
         KC_MUTE, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, KC_F12, KC_F7, KC_F8, KC_F9, KC_PSCR, U_NA, TD(TD_BASE), U_NA, TD(TD_TAP), TD(TD_BOOT), _______, _______, _______, _______,
+        _______, _______, KC_F12, KC_F7, KC_F8, KC_F9, KC_PSCR, U_NA, TD(TD_BASE), TD(TD_EXTRA), TD(TD_TAP), TD(TD_BOOT), _______, _______, _______, _______,
         _______, _______, KC_F11, KC_F4, KC_F5, KC_F6, KC_SCRL, U_NA, KC_RSFT, KC_ALGR, KC_RCTL, KC_RGUI,  _______, _______, _______,
         _______, _______, KC_F10, KC_F1, KC_F2, KC_F3, KC_PAUS, U_NA,  U_NA, TD(TD_FUN), TD(TD_MEDIA), KC_ALGR, U_NA, _______,  _______,
         _______, _______, _______,KC_APP,KC_SPC,KC_TAB,         U_NA,  U_NA,  _______, _______, _______),
@@ -225,7 +227,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     [USER3] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
     [USER4] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
     [USER5] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
-    [USER6] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
+    [EXTRA] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
     [BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
     [NUM] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
     [SYM] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
@@ -304,7 +306,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 bool dip_switch_update_user(uint8_t index, bool active) {
     if (index == 0) {
-        default_layer_set(1UL << (active ? 6 : 0));
+        default_layer_set(1UL << (active ? BASE : 0));
     }
     return false;
 }
