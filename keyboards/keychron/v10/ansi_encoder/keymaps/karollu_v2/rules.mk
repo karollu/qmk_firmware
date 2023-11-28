@@ -12,6 +12,7 @@ KEY_OVERRIDE_ENABLE = yes
 LTO_ENABLE = yes
 OS_DETECTION_ENABLE = yes
 LEADER_ENABLE = yes
+REPEAT_KEY_ENABLE = yes
 
 ifeq ($(strip $(RGB_MATRIX_ENABLE)), yes)
     SRC += rgb_matrix_user.c
