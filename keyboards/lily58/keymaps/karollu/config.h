@@ -19,6 +19,14 @@ Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) 2020 Max Drasbeck
 #define MASTER_LEFT
 // #define MASTER_RIGHT
 // #define EE_HANDS
+#define NO_ACTION_MACRO
+#define NO_ACTION_FUNCTION
+#ifndef NO_DEBUG
+#define NO_DEBUG
+#endif // !NO_DEBUG
+#if !defined(NO_PRINT) && !defined(CONSOLE_ENABLE)
+#define NO_PRINT
+#endif // !NO_PRINT
 
 #define ENCODERS_PAD_A { F4 }
 #define ENCODERS_PAD_B { F5 }
@@ -52,11 +60,14 @@ Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) 2020 Max Drasbeck
 #define TRI_LAYER_ADJUST_LAYER 12
 
 #define FN_LAYER_TRANSPARENT_KEYS_OFF
+#undef OLED_FONT_H
+#define OLED_FONT_END 217
+#define OLED_FONT_H "glcdfont_lily.c"
 
 
-// Underglow
-/*
+
 #undef RGBLED_NUM
-#define RGBLED_NUM 14    // Number of LEDs
-#define RGBLIGHT_SLEEP
-*/
+#define RGBLIGHT_EFFECT_KNIGHT
+#define RGBLED_NUM 10
+#define RGBLED_SPLIT { 5, 5 }
+

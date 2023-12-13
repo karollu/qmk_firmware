@@ -25,11 +25,8 @@ enum all_enums {
     MOUSE,
     MEDIA,
     NUM,
-    SYM,
     FUN,
     SPEC,
-    TD_BOOT,
-    TD_ESC_LOCK,
 };
 
 enum custom_keycodes {
@@ -45,7 +42,6 @@ enum custom_keycodes {
 #define U_NU KC_NO // available but not used
 
 // double tap
-#define _BOOT__ TD(TD_BOOT)
 #define __TAP__ TD(TAP)
 #define _EXTRA_ TD(EXTRA)
 #define _MOUSE_ TD(MOUSE)
@@ -54,7 +50,6 @@ enum custom_keycodes {
 #define __NAV__ TD(NAV)
 #define _MEDIA_ TD(MEDIA)
 #define __FUN__ TD(FUN)
-#define __SYM__ TD(SYM)
 #define __BTN__ TD(BTN)
 
 // go layers
@@ -63,7 +58,6 @@ enum custom_keycodes {
 #define GOMOUSE LT(MOUSE,KC_ENT)
 #define GO__FUN LT(FUN,KC_BSPC)
 #define GO__NUM LT(NUM,KC_SPC)
-#define GO__SYM LT(SYM,KC_DEL)
 #define GO_SPEC LT(SPEC,KC_MUTE)
 
 #define _COPY__ U_CPY

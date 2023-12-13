@@ -1,4 +1,4 @@
-#include "quantum.h"
+(#include "quantum.h"
 #include "keymap_user.h"
 
 const char *read_layer_state(void) {
