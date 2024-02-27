@@ -11,17 +11,18 @@
 
 #include QMK_KEYBOARD_H
 #include "keymap_user.h"
-//#include "os_detection.h"
+#include "os_detection.h"
 #include "layer.h"
 
 extern uint8_t is_master;
 bool frame = false;
-bool anim_sleep = true;
+bool krl_anim_sleep = true;
+char wpm_str[16];
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [BASE] = LAYOUT(
-  KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
+  KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    DB_TOGG,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
   KC_TAB,  KC_Q   , KC_W   , KC_F   , KC_P   , KC_B,                      KC_J   , KC_L   , KC_U   , KC_Y   , KC_SCLN, QK_REP,
   KC_LALT,  __HRA__, __HRR__, __HRS__, __HRT__, KC_G,                      KC_M   , __HRN__, __HRE__, __HRI__, __HRO__,SC_SENT,
   SC_LSPO, KC_Z   , KC_X, KC_C   , KC_D   , KC_V,    KC_NO,   KC_MUTE, KC_K   , KC_H   , KC_COMM, KC_DOT , _HRSLA_, SC_RCPC,
@@ -101,103 +102,77 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
 };
+static void render_status(void) {
+    sprintf(wpm_str, "%03d", get_current_wpm());
+    oled_write(wpm_str, false);
+    oled_write_P(PSTR(" w\n"), false);
+}
 
 //SSD1306 OLED update loop, make sure to enable OLED_ENABLE=yes in rules.mk
 #ifdef OLED_ENABLE
-
+void render_lily58_logo(void) {
+    static const char PROGMEM lily58_logo[] = {
+    // 'logo', 128x32px
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0xc0, 0x40, 0x40, 0xc0, 0x80, 0x80, 0x80, 0x00, 0x00,
+    0x80, 0xe0, 0x70, 0x3c, 0x0e, 0x06, 0x0e, 0x3c, 0x70, 0xe0, 0x80, 0x00, 0x00, 0xc0, 0xc0, 0x00,
+    0xc0, 0xc0, 0x00, 0xc0, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xc0, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xc0, 0x80, 0x00, 0x00, 0x00, 0x80,
+    0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x80, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0x80, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0x80, 0x80, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0xc0, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3f, 0xfc, 0xc0, 0x80, 0x80, 0x80, 0x81, 0x83, 0x83,
+    0x07, 0x07, 0x0c, 0x18, 0x70, 0xe0, 0x80, 0x00, 0x00, 0x01, 0xff, 0xfc, 0x80, 0xb6, 0xb6, 0x80,
+    0xb0, 0xb0, 0x00, 0x36, 0x36, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0xf1, 0x00, 0x00, 0x00, 0x00, 0xff,
+    0xff, 0x00, 0x00, 0x00, 0x30, 0xf0, 0xf0, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xf0, 0xf0,
+    0x30, 0x00, 0x00, 0x7f, 0xff, 0xff, 0xe1, 0x71, 0x71, 0xf1, 0xf1, 0xe1, 0xc1, 0x81, 0x00, 0x00,
+    0x00, 0x00, 0x0c, 0x3f, 0xff, 0xf3, 0xe1, 0xc1, 0xc1, 0x81, 0x81, 0xc3, 0xff, 0x7f, 0x1c, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x20, 0x70, 0x78, 0xdc, 0xcc, 0x86, 0x06, 0x03, 0x03, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+    0x01, 0x03, 0x02, 0x06, 0x84, 0xe1, 0xfb, 0x38, 0x1c, 0x0c, 0x02, 0x01, 0x01, 0x01, 0x01, 0x01,
+    0x01, 0x01, 0x03, 0x03, 0x06, 0x86, 0xcc, 0xdc, 0x78, 0x70, 0x20, 0x00, 0xff, 0xff, 0x80, 0x80,
+    0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0xff,
+    0xff, 0x80, 0x00, 0x00, 0x00, 0x00, 0x03, 0x1f, 0x7e, 0xf8, 0xe0, 0xf0, 0x7e, 0x1f, 0x03, 0x00,
+    0x00, 0x00, 0x00, 0xe0, 0xe0, 0xc0, 0xc0, 0x80, 0x80, 0x80, 0xc0, 0xe1, 0xff, 0x7f, 0x3f, 0x00,
+    0x00, 0x00, 0x3e, 0xff, 0xff, 0xc1, 0xc0, 0x80, 0x81, 0x81, 0xc3, 0xc3, 0xff, 0xfe, 0x3c, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x03, 0x03, 0x06, 0x06, 0x06, 0x04, 0x04, 0x04, 0x04, 0x06,
+    0x06, 0x02, 0x03, 0x01, 0x01, 0x00, 0x01, 0x01, 0x03, 0x02, 0x06, 0x06, 0x04, 0x04, 0x04, 0x04,
+    0x06, 0x06, 0x06, 0x03, 0x03, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01,
+    0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x01, 0x01, 0x01, 0x00, 0x00, 0x60, 0x60, 0x70, 0x38, 0x1f, 0x0f, 0x03, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00
+};
+    oled_write_raw_P(lily58_logo, sizeof(lily58_logo));
+}
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+  if (is_keyboard_master()) {
+      return OLED_ROTATION_0;
+  }
   return OLED_ROTATION_270;
 }
+const char *read_layer_state(void);
 
-static void render_logo2(void) {
-    static const char PROGMEM raw_logo[] = {
-        0,  0,  0,  0,  0,  0,192,192,240,112, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48,112,112,192,192,192,192,192,  0,  0,128,192,192,254,126,126,127,115,241,240,240,240,128,128,  0,  0,240,240,240,  0,  0,  0,112,112,112,113,113,113,113,113,206,142, 15, 15, 15,127,112,112,240,240,255,143,143,143, 15, 15,  0,  0, 35,115,115,126,126,126,112,112,240,240,240,240,112,112, 15, 15,240,240,240, 14, 14, 14,  1,  1,  1,  1,  1, 15, 14, 14,254,254,254,240,240,128,128,128,142,142,143,243,243,241,  0,  0,  0,  0,
-        1,  3,  3,126,126,126,128,128,128,  0,  0,  0,  0,  0, 15, 15, 15, 15, 15,113,113,113,255,255,255,127,127,127,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  3, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,  3,  3,  3,  0,  0,  0,  0,  0,  0,  0,
-    };
-    oled_write_raw_P(raw_logo, sizeof(raw_logo));
+static void render_layer(bool invert) {
+    oled_write_P(read_layer_state(), invert);
 }
-static void render_logo3(void) {
-    static const char PROGMEM raw_logo[] = {
-        0,  0,  0,  0,  0,  0,128,128,240,112,126, 30, 30, 30, 30, 30, 30, 30, 30, 30,126,112,112,112,112,112,240,128,128,  0,  0,  0,  0,  0,  0,  0,240,240, 63, 31, 31, 28, 60,252,224,224,  0,  0,124,124,  0,128,156, 28, 28, 28, 28, 28,255,243,243,  0,  0,  0,  0,  0,  0,  0,  3,  3,131,254,254,254,231,227,131,131,128,128, 28, 28, 28, 31, 31,156,252,252,252,156,159,  3,  3,  0,  0,  0,  0,248,252,  7,  7,  7, 15,120,224,  0,  0,  0,129,227,227,255,252,248,224,224,224,227,255,255,255,135, 31, 28,252,224,  0,  0,
-        0,  0,231,231,255, 60, 60, 60,255,255,255,255,255,255,255,255,255,252,255,255,255, 63, 31,  0,  7,  7,255,248,255,  7,  0,  0,  0,  0,  7,  7, 63, 56, 56, 56, 56, 57, 63,  7,  7,  1,  1,  1,  7,  7, 63, 57, 56, 56, 56, 56, 56,  7,  7,  1,  1,  0,  0,  0,
-    };
-    oled_write_raw_P(raw_logo, sizeof(raw_logo));
-}
-static void render_logo(bool invert) {
-    static const char PROGMEM data[] = {
-        //base
-        128,129,129,129,130,
-        32, 66, 115,101, 32,
-        160,161,161,161,162,0,
-        //navi
-        128,129,129,129,130,
-        32, 78,97,118, 32,
-        160,161,161,161,162,0
-    };
 
-    switch (get_highest_layer(layer_state)) {
-        case BASE:
-            oled_write_P(data, invert);
-        break;
-        case EXTRA:
-        case TAP:
-        case BTN:
-        case NAV:
-        case MOUSE:
-        case MEDIA:
-        case NUM:
-        case FUN:
-        case SPEC:
-        default:
-            oled_write_P(data + 16, invert);
-    }
-}
+const int *render_bongo_cat_anim(void);
+
 bool oled_task_user(void) {
   if (!is_keyboard_master()) {
-    render_logo(false);
+    render_bongo_cat_anim();
   } else {
-    render_logo(true);
-    if (frame) {
-        render_logo3();
-        if (anim_sleep) frame = false;
-    } else {
-        render_logo2();
-        if (anim_sleep) frame = true;
-    }
-    anim_sleep = false;
+    oled_clear();
+    render_status();
+    render_layer(true);
   }
     return false;
 }
 #endif // OLED_ENABLE
-
-
-#ifdef ENCODER_ENABLE
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (layer_state_is(BASE)) {
-        if (index == 0) {
-            if (clockwise) {
-            // Przesunięcie do przodu
-                tap_code16(LCTL(LSFT(KC_TAB)));
-            } else {
-                tap_code16(LCTL(KC_TAB));
-
-            }
-        }
-        // Prawy enkoder - regulacja głośności
-        else if (index == 1) {
-            if (clockwise) {
-            // Zwiększenie głośności
-            tap_code(KC_VOLU);
-            } else {
-            // Zmniejszenie głośności
-            tap_code(KC_VOLD);
-            }
-        }
-    }
-  return false;
-}
-#endif
-
 
 // Tap Dance declarations
 void u_td_fn_layer(tap_dance_state_t *state, void *user_data) {
@@ -236,7 +211,7 @@ uint16_t edit_key_code(uint16_t keycode) {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  anim_sleep = true;
+  krl_anim_sleep = true;
   switch (keycode) {
     case U_PST:
     case U_CPY:
@@ -277,3 +252,53 @@ combo_t key_combos[] = {
     COMBO(dv_combo, KC_LPRN),
     COMBO(kh_combo, KC_RPRN),
 };
+
+void keyboard_post_init_user(void) {
+  // Customise these values to desired behaviour
+  debug_enable=true;
+  debug_matrix=true;
+  debug_keyboard=true;
+  debug_mouse=true;
+}
+
+
+/* const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [BASE] = { ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN), ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
+    [EXTRA] = { ENCODER_CCW_CW(RGB_HUD, RGB_HUI), ENCODER_CCW_CW(RGB_SAD, RGB_SAI)   },
+    [NUM] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI),           ENCODER_CCW_CW(RGB_SPD, RGB_SPI)},
+    [TAP] = {  ENCODER_CCW_CW(RGB_RMOD, RGB_MOD),          ENCODER_CCW_CW(KC_RIGHT, KC_LEFT) },
+    [NAV] = {  ENCODER_CCW_CW(RGB_RMOD, RGB_MOD),          ENCODER_CCW_CW(KC_RIGHT, KC_LEFT)  },
+    [BTN] = {  ENCODER_CCW_CW(RGB_RMOD, RGB_MOD),          ENCODER_CCW_CW(KC_RIGHT, KC_LEFT)  },
+    [MOUSE] = {  ENCODER_CCW_CW(RGB_RMOD, RGB_MOD),          ENCODER_CCW_CW(KC_RIGHT, KC_LEFT)  },
+    [MEDIA] = { ENCODER_CCW_CW(RGB_RMOD, RGB_MOD),          ENCODER_CCW_CW(KC_RIGHT, KC_LEFT) },
+    [FUN] = {  ENCODER_CCW_CW(RGB_RMOD, RGB_MOD),          ENCODER_CCW_CW(KC_RIGHT, KC_LEFT) },
+    [SPEC] = { ENCODER_CCW_CW(LCTL(KC_I), LCTL(KC_O)), ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+}; */
+
+
+#if defined(ENCODER_ENABLE) && !defined(ENCODER_MAP_ENABLE)
+bool encoder_update_user(uint8_t index, bool clockwise) {
+    if (layer_state_is(BASE)) {
+        if (index == 0) {
+            if (clockwise) {
+            // Przesunięcie do przodu
+                tap_code16(LCTL(LSFT(KC_TAB)));
+            } else {
+                tap_code16(LCTL(KC_TAB));
+
+            }
+        }
+        // Prawy enkoder - regulacja głośności
+        else if (index == 1) {
+            if (!clockwise) {
+            // Zwiększenie głośności
+            tap_code(KC_VOLU);
+            } else {
+            // Zmniejszenie głośności
+            tap_code(KC_VOLD);
+            }
+        }
+    }
+  return false;
+}
+#endif
