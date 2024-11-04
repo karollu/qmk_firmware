@@ -74,8 +74,3 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     return true;
 }
-
-const uint16_t PROGMEM QW_COMBO[] = {KC_Q, KC_W, COMBO_END};
-combo_t key_combos[] = {
-    COMBO(QW_COMBO, KC_ESC),
-};
