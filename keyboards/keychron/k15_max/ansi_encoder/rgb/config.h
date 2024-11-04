@@ -53,3 +53,8 @@
 #    define RGB_MATRIX_KEYPRESSES
 #    define RGB_MATRIX_FRAMEBUFFER_EFFECTS
 #endif
+
+#undef TAPPING_TERM
+#define TAPPING_TERM 200
+
+#define QUICK_TAP_TERM 0
